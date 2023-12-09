@@ -108,6 +108,20 @@ class LocalSettings(BaseModel):
             "`llama2` is the historic behaviour. `default` might work better with your custom models."
         ),
     )
+    default_context_template: str | None = Field(
+        None,
+        description=(
+            "The default context template to use for the chat engine when using RAG. "
+            "If none is given - use the default system prompt (from the llama_index). "
+        ),
+    )
+    default_system_message_query_docs: str | None = Field(
+        None,
+        description=(
+            "This is added as system message to force the behaviour of the LLM"
+            " to answer only questions about the provided context."
+        ),
+    )
 
 
 class EmbeddingSettings(BaseModel):

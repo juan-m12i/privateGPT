@@ -97,6 +97,7 @@ class ChatService:
         system_prompt: str | None = None,
         use_context: bool = False,
         context_filter: ContextFilter | None = None,
+        context_template: str | None = None,
     ) -> BaseChatEngine:
         if use_context:
             vector_index_retriever = self.vector_store_component.get_retriever(
@@ -109,6 +110,7 @@ class ChatService:
                 node_postprocessors=[
                     MetadataReplacementPostProcessor(target_metadata_key="window"),
                 ],
+                context_template=context_template
             )
         else:
             return SimpleChatEngine.from_defaults(
@@ -121,6 +123,7 @@ class ChatService:
         messages: list[ChatMessage],
         use_context: bool = False,
         context_filter: ContextFilter | None = None,
+        context_template: str | None = None,
     ) -> CompletionGen:
         chat_engine_input = ChatEngineInput.from_messages(messages)
         last_message = (
@@ -141,6 +144,7 @@ class ChatService:
             system_prompt=system_prompt,
             use_context=use_context,
             context_filter=context_filter,
+            context_template=context_template
         )
         streaming_response = chat_engine.stream_chat(
             message=last_message if last_message is not None else "",
@@ -157,6 +161,7 @@ class ChatService:
         messages: list[ChatMessage],
         use_context: bool = False,
         context_filter: ContextFilter | None = None,
+        context_template: str | None = None
     ) -> Completion:
         chat_engine_input = ChatEngineInput.from_messages(messages)
         last_message = (
@@ -177,6 +182,7 @@ class ChatService:
             system_prompt=system_prompt,
             use_context=use_context,
             context_filter=context_filter,
+            context_template=context_template
         )
         wrapped_response = chat_engine.chat(
             message=last_message if last_message is not None else "",
