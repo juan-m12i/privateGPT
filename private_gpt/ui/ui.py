@@ -116,20 +116,24 @@ class PrivateGptUi:
         all_messages = [*build_history(), new_message]
         match mode:
             case "Query Docs":
+                DEFAULT_SYSTEM_MESSAGE_QUERY_DOCS: str = (
+                    "You can only answer questions about the provided context. If you know the answer "
+                    "but it is not based in the provided context, don't provide the answer, just state "
+                    "the answer is not in the context provided."
+                    )
                 # Add a system message to force the behaviour of the LLM
                 # to answer only questions about the provided context.
                 all_messages.insert(
                     0,
                     ChatMessage(
-                        content="You can only answer questions about the provided context. If you know the answer "
-                        "but it is not based in the provided context, don't provide the answer, just state "
-                        "the answer is not in the context provided.",
+                        content=settings.local.default_system_message_query_docs or DEFAULT_SYSTEM_MESSAGE_QUERY_DOCS,
                         role=MessageRole.SYSTEM,
                     ),
                 )
                 query_stream = self._chat_service.stream_chat(
                     messages=all_messages,
                     use_context=True,
+                    context_template=settings.local.default_context_template
                 )
                 yield from yield_deltas(query_stream)
 
