@@ -126,14 +126,14 @@ class PrivateGptUi:
                 all_messages.insert(
                     0,
                     ChatMessage(
-                        content=settings.local.default_system_message_query_docs or DEFAULT_SYSTEM_MESSAGE_QUERY_DOCS,
+                        content=settings().local.default_system_message_query_docs or DEFAULT_SYSTEM_MESSAGE_QUERY_DOCS,
                         role=MessageRole.SYSTEM,
                     ),
                 )
                 query_stream = self._chat_service.stream_chat(
                     messages=all_messages,
                     use_context=True,
-                    context_template=settings.local.default_context_template
+                    context_template=settings().local.default_context_template
                 )
                 yield from yield_deltas(query_stream)
 
